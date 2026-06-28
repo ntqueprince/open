@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08111f">
+  <title>OPEN</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="open.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="OPEN home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+        <span><strong>OPEN</strong><small>Work tools, one place</small></span>
+      </a>
+      <div class="topbar-meta">
+        <span class="status-dot"></span>
+        <span>Ready to work</span>
+        <kbd>Ctrl K</kbd>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <p class="eyebrow">WORKSPACE</p>
+        <h1>OPEN Workspace</h1>
+        <p class="hero-copy">Remarks search, ticket notes and daily quick links.</p>
+      </div>
+      <div class="hero-stats" aria-label="Workspace summary">
+        <div><strong id="remarkCount">0</strong><span>Saved remarks</span></div>
+        <div><strong id="linkCount">0</strong><span>Quick links</span></div>
+      </div>
+    </section>
+
+    <nav class="tool-tabs" aria-label="OPEN tools">
+      <button class="tool-tab active" type="button" data-view="remarks" aria-selected="true">
+        <span class="tab-icon">✦</span><span><strong>Remarks Helper</strong><small>Search, generate & copy</small></span>
+      </button>
+      <button class="tool-tab" type="button" data-view="links" aria-selected="false">
+        <span class="tab-icon">↗</span><span><strong>Quick Links</strong><small>Open daily work tools</small></span>
+      </button>
+    </nav>
+
+    <section id="remarksView" class="workspace active" aria-label="Remarks Helper">
+      <div class="workspace-head">
+        <div><p class="eyebrow">REMARKS HELPER</p><h2>What do you need to say?</h2></div>
+        <div class="remarks-actions">
+          <button id="openPipButton" class="floating-button" type="button" title="Open Remarks Helper in a floating window">
+            <span aria-hidden="true">▣</span> Floating
+          </button>
+          <div class="mode-switch" role="tablist" aria-label="Remark type">
+            <button class="active" type="button" data-mode="search">Search</button>
+            <button type="button" data-mode="ticket">Ticket + TAT</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="searchMode">
+        <label class="search-box" for="remarkSearch">
+          <span aria-hidden="true">⌕</span>
+          <input id="remarkSearch" type="search" autocomplete="off" placeholder="Try “refund”, “KYC”, “name correction”…">
+          <button id="clearSearch" type="button" aria-label="Clear search">Clear</button>
+        </label>
+        <div class="result-meta"><span id="resultCount">Showing all remarks</span><span>Click any card to copy</span></div>
+        <div id="remarkResults" class="remark-grid" aria-live="polite"></div>
+        <div id="emptyState" class="empty-state" hidden><span>⌕</span><h3>No matching remark</h3><p>Try a shorter keyword or another phrase.</p></div>
+      </div>
+
+      <div id="ticketMode" class="ticket-builder" hidden>
+        <div class="ticket-form">
+          <label>Ticket ID<input id="ticketId" type="text" autocomplete="new-password"></label>
+          <label>TAT / Date<input id="tatDate" type="text" autocomplete="new-password"></label>
+        </div>
+        <div class="generated-remark">
+          <div><span>Generated remark</span><small>Ticket ID is automatically capitalised</small></div>
+          <p id="ticketOutput">Fill both fields to generate your remark.</p>
+          <button id="copyTicket" class="primary-button" type="button" disabled><span>Copy remark</span><b>⌘C</b></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="linksView" class="workspace" aria-label="Quick Links" hidden>
+      <div class="workspace-head links-head">
+        <div><p class="eyebrow">QUICK LINKS</p><h2>Your daily launchpad.</h2><p>Open a single tool, or unlock and launch the complete set.</p></div>
+        <button id="openAllButton" class="primary-button launch-all" type="button"><span>Open all links</span><b>↗</b></button>
+      </div>
+      <div id="quickLinkGrid" class="quick-link-grid"></div>
+      <div class="flags-card">
+        <span class="flags-icon">⚑</span>
+        <div><strong>Chrome flags</strong><p>Browser security blocks opening internal Chrome URLs from a page. Copy it, then paste in a new tab.</p></div>
+        <button id="copyFlags" type="button">Copy chrome://flags/</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="unlockModal" class="modal" hidden>
+    <div class="modal-backdrop" data-close-modal></div>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="unlockTitle">
+      <button class="modal-close" type="button" data-close-modal aria-label="Close">×</button>
+      <span class="lock-mark">⌁</span>
+      <p class="eyebrow">SECURE ACTION</p>
+      <h2 id="unlockTitle">Unlock Quick Links</h2>
+      <p>Enter your workspace password to open all links.</p>
+      <form id="unlockForm">
+        <label>Password<div class="password-field"><input id="quickLinksPassword" type="password" autocomplete="current-password" placeholder="Enter password" required><button id="togglePassword" type="button" aria-label="Show password">Show</button></div></label>
+        <p id="passwordError" class="form-error" role="alert"></p>
+        <button class="primary-button full" type="submit"><span>Unlock & open</span><b>↗</b></button>
+      </form>
+    </section>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"><span id="toastIcon">✓</span><p><strong id="toastTitle">Copied</strong><small id="toastMessage">Ready to paste</small></p></div>
+  <script src="open.js"></script>
+</body>
+</html>
